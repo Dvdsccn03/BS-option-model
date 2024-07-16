@@ -251,8 +251,9 @@ with col2: st.plotly_chart(put_fig)
 
 
 # Plot Greeks over time until expiration
+total_days = (exp - dt.datetime.today()).days
 exp_dates = pd.date_range(start=dt.datetime.today(), end=exp, periods=100)
-T_values = [(date - dt.datetime.today()).days / 365 for date in exp_dates]
+T_values = [(total_days - (date - dt.datetime.today()).days) / 365 for date in exp_dates]
 
 greeks_over_time = pd.DataFrame({
     'Date': exp_dates,
