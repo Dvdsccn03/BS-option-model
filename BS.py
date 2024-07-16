@@ -174,6 +174,8 @@ r = st.sidebar.number_input('Risk Free Rate (r) in decimal', min_value=0.0, valu
 sigma = st.sidebar.number_input('Volatility (sigma) in decimal', min_value=0.0, value=0.2, step=0.01)
 q = st.sidebar.number_input('Annual dividend yield (q)', min_value=0.0, value=0.0, step=0.01)
 
+
+# Get functions results
 callPrice = call(S, K, T, r, sigma, q)
 putPrice = put(S, K, T, r, sigma, q)
 
@@ -185,7 +187,6 @@ thetaCall = theta_call(S, K, T, r, sigma)
 thetaPut = theta_put(S, K, T, r, sigma)
 rhoCall = rho_call(S, K, T, r, sigma)
 rhoPut = rho_put(S, K, T, r, sigma)
-
 
 
 # Display results
@@ -291,8 +292,6 @@ with col2:
 st.write("")
 st.write("")
 st.write("")
-st.write("")
-st.write("")
 
 
 
@@ -327,13 +326,10 @@ stockData['dReturns'] = stockData['Close'].pct_change()
 stockData['HVol'] = stockData['dReturns'].rolling(window=30).std() * np.sqrt(252)
 
 
+# Plot comparizon
+fig3 = go.Figure()
 
-
-
-fig = go.Figure()
-
-# Historical Volatility
-fig.add_trace(go.Scatter(
+fig3.add_trace(go.Scatter(
     x=stockData.index,
     y=stockData['HVol'],
     mode='lines',
@@ -343,7 +339,7 @@ fig.add_trace(go.Scatter(
 
 # Implied Volatility Call
 if IVcall is not None:
-    fig.add_trace(go.Scatter(
+    fig3.add_trace(go.Scatter(
         x=[stockData.index.min(), stockData.index.max()],
         y=[IVcall, IVcall],
         mode='lines',
@@ -353,7 +349,7 @@ if IVcall is not None:
 
 # Implied Volatility Put
 if IVput is not None:
-    fig.add_trace(go.Scatter(
+    fig3.add_trace(go.Scatter(
         x=[stockData.index.min(), stockData.index.max()],
         y=[IVput, IVput],
         mode='lines',
@@ -362,7 +358,7 @@ if IVput is not None:
     ))
 
 # Aggiorna layout
-fig.update_layout(
+fig3.update_layout(
     title='Historical and Implied Volatility',
     xaxis_title='Date',
     yaxis_title='Volatility',
@@ -370,5 +366,4 @@ fig.update_layout(
     legend=dict(orientation="v", yanchor="top", y=1, xanchor="left", x=0.62)
 )
 
-# Visualizza il grafico
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig3, use_container_width=True)
