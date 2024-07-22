@@ -166,7 +166,7 @@ with col_t: st.markdown("""Created by
 # Sidebar parameters
 st.sidebar.header('Input BS parameters')
 S = st.sidebar.number_input('Stock Price (S)', min_value=0.0, value=100.0, step=0.01)
-K = st.sidebar.number_input('Strike Price (k)', min_value=0.0, value=100.0, step=0.01)
+K = st.sidebar.number_input('Strike Price (k)', min_value=0.0, value=120.0, step=0.01)
 exp = st.sidebar.date_input('Expiry Date', value=dt.datetime(2025,9,19))
 exp = dt.datetime.combine(exp, dt.datetime.min.time())
 T = (exp - dt.datetime.today()).days / 365
@@ -252,7 +252,7 @@ with col2: st.plotly_chart(put_fig)
 
 # Plot Greeks over time until expiration
 total_days = (exp - dt.datetime.today()).days
-exp_dates = pd.date_range(start=dt.datetime.today(), end=exp, periods=100)
+exp_dates = pd.date_range(start=dt.datetime.today(), end=exp, periods=total_days)
 T_values = [(total_days - (date - dt.datetime.today()).days) / 365 for date in exp_dates]
 
 greeks_over_time = pd.DataFrame({
@@ -319,7 +319,7 @@ st.write("")
 st.header("Compare with historical volatility")
 ticker = st.text_input('Stock Ticker', value='AAPL')
 col5, col6 = st.columns(2)
-with col5: start = st.date_input('Start Date', value=dt.datetime(2020, 1, 1))
+with col5: start = st.date_input('Start Date', value=dt.datetime(2021, 1, 1))
 with col6: end = st.date_input('End Date', value=dt.datetime.today())
 
 stockData = yf.download(ticker, start, end)
@@ -364,7 +364,7 @@ fig3.update_layout(
     xaxis_title='Date',
     yaxis_title='Volatility',
     margin=dict(t=50, b=20),
-    legend=dict(orientation="v", yanchor="top", y=1, xanchor="left", x=0.62)
+    legend=dict(orientation="v", yanchor="top", y=1, xanchor="left", x=0.72)
 )
 
 st.plotly_chart(fig3, use_container_width=True)
