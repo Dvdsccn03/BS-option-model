@@ -317,7 +317,7 @@ with col4: st.metric('Implied volatility put', value=f"{IVput:.2f}" if IVput is 
 # Compare with historical volatility
 st.write("")
 st.header("Compare with historical volatility")
-ticker = st.text_input('Stock Ticker', value='AAPL')
+ticker = st.text_input('Yahoo Stock Ticker', value='AAPL')
 col5, col6 = st.columns(2)
 with col5: start = st.date_input('Start Date', value=dt.datetime(2021, 1, 1))
 with col6: end = st.date_input('End Date', value=dt.datetime.today())
