@@ -335,7 +335,7 @@ fig3.add_trace(go.Scatter(
     y=stockData['HVol'],
     mode='lines',
     name='Historical Volatility (30-day Annualized)',
-    line=dict(color='white')
+    line=dict(color='lightblue')
 ))
 
 # Implied Volatility Call
@@ -345,7 +345,7 @@ if IVcall is not None:
         y=[IVcall, IVcall],
         mode='lines',
         name='Implied Volatility Call',
-        line=dict(color='lightblue')
+        line=dict(color='blue')
     ))
 
 # Implied Volatility Put
