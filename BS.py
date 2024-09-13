@@ -250,6 +250,46 @@ with col2: st.plotly_chart(put_fig)
 
 
 
+# Plot greeks for different underlying prices
+Stock_values = np.linspace(K * 1.5, K * 0.5, 100)
+
+greeks_over_price = pd.DataFrame({
+    'Price': Stock_values,
+    'Delta Call': [delta_call(S, K, T, r, sigma) for S in Stock_values],
+    'Delta Put': [delta_put(S, K, T, r, sigma) for S in Stock_values],
+    'Gamma': [gamma_calc(S, K, T, r, sigma) for S in Stock_values],
+    'Vega': [vega_calc(S, K, T, r, sigma) for S in Stock_values],
+    'Theta Call': [theta_call(S, K, T, r, sigma) for S in Stock_values],
+    'Theta Put': [theta_put(S, K, T, r, sigma) for S in Stock_values],
+    'Rho Call': [rho_call(S, K, T, r, sigma) for S in Stock_values],
+    'Rho Put': [rho_put(S, K, T, r, sigma) for S in Stock_values],
+})
+
+fig3 = go.Figure()
+fig3.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Delta Call'], mode='lines', name='Delta', line=dict(color='#ADD8E6')))
+fig3.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Gamma'], mode='lines', name='Gamma', line=dict(color='#E6E6FA')))
+fig3.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Vega'], mode='lines', name='Vega', line=dict(color='#B57EDC')))
+fig3.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Theta Call'], mode='lines', name='Theta', line=dict(color='#87CEFA')))
+fig3.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Rho Call'], mode='lines', name='Rho', line=dict(color='#DDA0DD')))
+fig3.update_layout(title='Call Greek Sensitivity Graph', xaxis_title='Price', yaxis_title='Value', legend_title='Greeks')
+with col1:
+    with st.expander("Call Greek Sensitivity Graph"):
+        st.plotly_chart(fig3)
+
+
+fig4 = go.Figure()
+fig4.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Delta Put'], mode='lines', name='Delta', line=dict(color='#ADD8E6')))
+fig4.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Gamma'], mode='lines', name='Gamma', line=dict(color='#E6E6FA')))
+fig4.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Vega'], mode='lines', name='Vega', line=dict(color='#B57EDC')))
+fig4.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Theta Put'], mode='lines', name='Theta', line=dict(color='#87CEFA')))
+fig4.add_trace(go.Scatter(x=greeks_over_price['Price'], y=greeks_over_price['Rho Put'], mode='lines', name='Rho', line=dict(color='#DDA0DD')))
+fig4.update_layout(title='Put Greek Sensitivity Graph', xaxis_title='Price', yaxis_title='Value', legend_title='Greeks')
+with col2:
+    with st.expander("Put Greek Sensitivity Graph"):
+        st.plotly_chart(fig4)
+
+
+
 # Plot Greeks over time until expiration
 total_days = (exp - dt.datetime.today()).days
 exp_dates = pd.date_range(start=dt.datetime.today(), end=exp, periods=total_days)
@@ -293,7 +333,6 @@ with col2:
 st.write("")
 st.write("")
 st.write("")
-
 
 
 
