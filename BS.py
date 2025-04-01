@@ -167,7 +167,7 @@ with col_t: st.markdown("""Created by
 st.sidebar.header('Input BS parameters')
 S = st.sidebar.number_input('Stock Price (S)', min_value=0.0, value=100.0, step=0.01)
 K = st.sidebar.number_input('Strike Price (k)', min_value=0.0, value=120.0, step=0.01)
-exp = st.sidebar.date_input('Expiry Date', value=dt.datetime(2025,9,19))
+exp = st.sidebar.date_input('Expiry Date', value=dt.datetime(2027,9,19))
 exp = dt.datetime.combine(exp, dt.datetime.min.time())
 T = (exp - dt.datetime.today()).days / 365
 r = st.sidebar.number_input('Risk Free Rate (r) in decimal', min_value=0.0, value=0.02, step=0.01)
@@ -407,3 +407,9 @@ fig3.update_layout(
 )
 
 st.plotly_chart(fig3, use_container_width=True)
+
+
+
+
+
+
