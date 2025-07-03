@@ -354,6 +354,35 @@ with col4: st.metric('Implied volatility put', value=f"{IVput:.2f}" if IVput is 
 
 
 # Compare with historical volatility
+import time
+import pandas_datareader.data as web
+
+@st.cache_data(ttl=300)
+def load_history(ticker: str, start: dt.datetime, end: dt.datetime) -> pd.DataFrame:
+    # 1) Try yfinance Ticker.history() first
+    try:
+        df = yf.Ticker(ticker).history(
+            start=start,
+            end=end,
+            interval="1d",
+            actions=False   # don’t fetch dividends/splits
+        )
+        if not df.empty:
+            return df
+    except Exception:
+        pass
+
+    # 2) Fallback to Stooq via pandas_datareader
+    try:
+        df2 = web.DataReader(ticker, "stooq", start, end)
+        df2 = df2.sort_index()  # stooq returns newest first
+        return df2
+    except Exception as e:
+        st.error(f"All data sources failed: {e}")
+        return pd.DataFrame()
+
+
+
 st.write("")
 st.header("Compare with historical volatility")
 ticker = st.text_input('Yahoo Stock Ticker', value='AAPL')
@@ -361,9 +390,17 @@ col5, col6 = st.columns(2)
 with col5: start = st.date_input('Start Date', value=dt.datetime(2021, 1, 1))
 with col6: end = st.date_input('End Date', value=dt.datetime.today())
 
-stockData = yf.download(ticker, start, end)
+stockData = load_history(ticker, start, end)
+if stockData.empty:
+    st.error("❗️ Couldn’t fetch any data for rate limits or wrong ticker. Try again in 5-10 minutes.")
+    st.stop()
+
+# Flatten MultiIndex if it sneaks in
+if isinstance(stockData.columns, pd.MultiIndex):
+    stockData.columns = stockData.columns.get_level_values(0)
+
 stockData['dReturns'] = stockData['Close'].pct_change()
-stockData['HVol'] = stockData['dReturns'].rolling(window=30).std() * np.sqrt(252)
+stockData['HVol'] = stockData['dReturns'].rolling(window=20).std() * np.sqrt(252)
 
 
 # Plot comparizon
@@ -373,7 +410,7 @@ fig3.add_trace(go.Scatter(
     x=stockData.index,
     y=stockData['HVol'],
     mode='lines',
-    name='Historical Volatility (30-day Annualized)',
+    name='Historical Volatility (20-day Annualized)',
     line=dict(color='lightblue')
 ))
 
